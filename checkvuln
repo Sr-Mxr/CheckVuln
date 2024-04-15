@@ -1,0 +1,86 @@
+#!/bin/bash
+    echo -e  "\e[1;31m-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-\e[0m"
+# Función para mostrar el menú
+show_menu() {
+    echo -e  "\e[1;36m###########################################\e[0m"
+    echo -e  "\e[1;36m#                                         #\e[0m"	
+    echo -e  "\e[1;36m#       Escáner de Vulnerabilidades       #\e[0m"
+    echo -e  "\e[1;36m#                                         #\e[0m"
+    echo -e  "\e[1;36m###########################################\e[0m"
+    echo -e  "\e[1;33m-------------------------------------------\e[0m"
+    echo "1. Escanear puertos con Nmap"
+    echo "2. Escanear vulnerabilidades web con Nikto"
+    echo "3. Mostrar usuarios y dispositivos conectados a la red"
+    echo "4. Monitorear tráfico de red"
+    echo "5. Registro de actividad"
+    echo "6. Generación de informes"
+    echo "7. Salir"
+    echo -e  "\e[1;33m-------------------------------------------\e[0m"
+}
+
+# Función para escanear puertos con Nmap
+scan_ports() {
+    read -p $'\e[1;32mIntroduce la dirección IP o nombre del host: \e[0m' target
+    echo -e "\e[1;34mEscaneando puertos con Nmap en $target...\e[0m"
+    nmap -Pn -p- --open -T4 $target
+}
+
+# Función para escanear vulnerabilidades web con Nikto
+scan_web_vulnerabilities() {
+    read -p $'\e[1;32mIntroduce la dirección IP o nombre del host: \e[0m' target
+    echo -e "\e[1;34mEscaneando vulnerabilidades web con Nikto en $target...\e[0m"
+    nikto -h $target
+}
+
+# Función para mostrar todos los usuarios y dispositivos conectados a la red
+show_connected_devices() {
+    echo -e "\e[1;32mMostrando usuarios y dispositivos conectados a la red...\e[0m"
+    sudo arp-scan --localnet
+}
+
+# Función para monitorear el tráfico de red
+monitor_network_traffic() {
+    echo -e "\e[1;34mMonitoreando el tráfico de red...\e[0m"
+    sudo tcpdump -i any -nnvvXSs 1514
+}
+
+# Función para registrar actividad
+log_activity() {
+    echo -e "\e[1;34mRegistrando actividad...\e[0m"
+    # Obtener la fecha y hora actual
+    timestamp=$(date +"%Y-%m-%d %T")
+    # Escribir la actividad en un archivo de registro
+    echo "[$timestamp] Actividad registrada." >> actividad.log
+}
+
+# Función para generar informes
+generate_reports() {
+    echo -e "\e[1;34mGenerando informes...\e[0m"
+    # Obtener la fecha actual para el nombre del informe
+    report_date=$(date +"%Y-%m-%d")
+    # Crear el archivo de informe con el nombre
+    report_file="informe_$report_date.txt"
+    # Agregar el encabezado al informe
+    echo "Informe de Escáner de Vulnerabilidades - $report_date" > $report_file
+    echo -e "\e[1;33m--------------------------------------------\e[0m" >> $report_file
+    # Agregar información adicional al informe
+    echo "Información adicional aquí..." >> $report_file
+    # Notificar al usuario que se ha generado el informe
+    echo "Informe generado: $report_file"
+}
+
+# Ciclo principal del programa
+while true; do
+    show_menu
+    read -p $'\e[1;35mSeleccione una opción:\e[0m' option
+    case $option in
+        1) scan_ports ;;
+        2) scan_web_vulnerabilities ;;
+        3) show_connected_devices ;;
+        4) monitor_network_traffic ;;
+        5) log_activity ;;
+        6) generate_reports ;;
+        7) echo -e  "\e[1;32m¡Adiós!\e[0m"; exit ;;
+        *) echo "Opción inválida. Por favor, seleccione una opción válida." ;;
+    esac
+done
